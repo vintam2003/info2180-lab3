@@ -1,6 +1,6 @@
 
 window.addEventListener('DOMContentLoaded', () => {
-
+  
   const squares = document.querySelectorAll('#board > div');
   squares.forEach((sq) => sq.classList.add('square'));
 
@@ -8,6 +8,8 @@ window.addEventListener('DOMContentLoaded', () => {
   let currentPlayer = 'X';
   const boardState = Array(9).fill(null);
   const statusDiv = document.getElementById('status');
+  const defaultStatus = 'Move your mouse over a square and click to play an X or an O.';
+  let gameOver = false; 
 
   
   squares.forEach((square) => {
@@ -28,6 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const winner = boardState[a];
         statusDiv.textContent = `Congratulations! ${winner} is the Winner!`;
         statusDiv.classList.add('you-won');
+        gameOver = true;          
         return true;
       }
     }
@@ -38,12 +41,14 @@ window.addEventListener('DOMContentLoaded', () => {
   squares.forEach((square, index) => {
     square.addEventListener('click', () => {
       
-      if (boardState[index] !== null || checkWinner()) return;
+      if (gameOver || boardState[index] !== null) return;
 
+      
       square.textContent = currentPlayer;
       square.classList.add(currentPlayer);
       boardState[index] = currentPlayer;
 
+      
       if (!checkWinner()) {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
       }
@@ -51,22 +56,16 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   
-  const resetBtn = document.querySelector('.btn'); 
-  const defaultStatus = 'Move your mouse over a square and click to play an X or an O.';
-
+  const resetBtn = document.querySelector('.btn');
   resetBtn.addEventListener('click', () => {
-    
     squares.forEach((square, i) => {
       square.textContent = '';
       square.classList.remove('X', 'O', 'hover');
       boardState[i] = null;
     });
-
-  
     statusDiv.textContent = defaultStatus;
     statusDiv.classList.remove('you-won');
     currentPlayer = 'X';
+    gameOver = false; 
   });
 });
-
-
